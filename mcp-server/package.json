@@ -1,0 +1,11 @@
+{
+  "name": "grok-bot-cross-agent-leak-mcp-servers",
+  "version": "1.0.0",
+  "description": "Two toy MCP servers (read-only finance, Slack poster) for reproducing the 2026-10-19 cross-agent data leak and testing an agentgateway MCP guardrail against it",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^3.24.1"
+  }
+}

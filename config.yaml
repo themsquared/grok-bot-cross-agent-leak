@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+#
+# Fronts ONLY the Slack-posting server. The finance server stays off the
+# gateway entirely in this demo, same as the real incident: the read-only
+# bot was never the problem, the unguarded posting bot was.
+config:
+  adminAddr: "off"
+mcp:
+  port: 13000
+  policies:
+    cors:
+      allowOrigins: ["*"]
+      allowHeaders: ["*"]
+      exposeHeaders: ["Mcp-Session-Id"]
+    mcpGuardrails:
+      processors:
+      # Reject a post_message call whose text carries the classification tag
+      # a different tool (get_balance) stamped onto financial data. This is
+      # the fence the two Grok Bots didn't have between them: it doesn't
+      # matter which agent originated the call, or how many "separate" bots
+      # were involved upstream, the gateway only cares what is in THIS
+      # tool's arguments.
+      - kind: expression
+        methods: {"tools/call": request}
+        condition: >-
+          mcp.params.name == 'post_message' &&
+          has(mcp.params.arguments) &&
+          has(mcp.params.arguments.text) &&
+          mcp.params.arguments.text.contains('[FINANCIAL-RESTRICTED]')
+        reject: "blocked: this message carries a FINANCIAL-RESTRICTED tag and this tool has no cross-agent-relay grant for that classification"
+  targets:
+  - name: slack-poster
+    stdio:
+      cmd: node
+      args: ["mcp-server/slack-server.js"]
