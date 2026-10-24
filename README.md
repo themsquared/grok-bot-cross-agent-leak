@@ -1,5 +1,7 @@
 # grok-bot-cross-agent-leak
 
+> 📖 **Read the write-up:** [Two Grok Bots Leaked a CEO's Bank Balance to Slack](https://webofmike.com/grok-bot-cross-agent-leak/)
+
 A runnable reproduction of the 2026-10-19 incident where two "separate" Grok
 Bots on one machine leaked a CEO's bank balance into a public Slack channel,
 plus an `agentgateway` MCP guardrail that stops the specific failure: a tool
